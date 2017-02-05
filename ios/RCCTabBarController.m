@@ -54,10 +54,12 @@
 
   UIColor *buttonColor = nil;
   UIColor *selectedButtonColor = nil;
+  NSString *tabBarShowLabels = nil;
   NSDictionary *tabsStyle = props[@"style"];
   if (tabsStyle)
   {
     NSString *tabBarButtonColor = tabsStyle[@"tabBarButtonColor"];
+    tabBarShowLabels = tabsStyle[@"tabBarShowLabels"];
     if (tabBarButtonColor)
     {
       UIColor *color = tabBarButtonColor != (id)[NSNull null] ? [RCTConvert UIColor:tabBarButtonColor] : nil;
@@ -80,6 +82,9 @@
       UIColor *color = tabBarBackgroundColor != (id)[NSNull null] ? [RCTConvert UIColor:tabBarBackgroundColor] : nil;
       self.tabBar.barTintColor = color;
     }
+  }
+  else{
+    tabBarShowLabels = @"shown";
   }
 
   NSMutableArray *viewControllers = [NSMutableArray array];
@@ -115,9 +120,19 @@
     id selectedIcon = tabItemLayout[@"props"][@"selectedIcon"];
     if (selectedIcon) iconImageSelected = [RCTConvert UIImage:selectedIcon];
 
-    viewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:iconImage tag:0];
-    viewController.tabBarItem.accessibilityIdentifier = tabItemLayout[@"props"][@"testID"];
-    viewController.tabBarItem.selectedImage = iconImageSelected;
+    if ([tabBarShowLabels isEqualToString:@"hidden"]) {
+      UITabBarItem *tabItem = [[UITabBarItem alloc] init];
+      viewController.tabBarItem = tabItem;
+      tabItem.image = iconImage;
+      tabItem.tag = 0;
+      tabItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
+      viewController.tabBarItem.accessibilityIdentifier = tabItemLayout[@"props"][@"testID"];
+      viewController.tabBarItem.selectedImage = iconImageSelected;
+    } else {
+      viewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:title image:iconImage tag:0];
+      viewController.tabBarItem.accessibilityIdentifier = tabItemLayout[@"props"][@"testID"];
+      viewController.tabBarItem.selectedImage = iconImageSelected;
+    }
 
     if (buttonColor)
     {

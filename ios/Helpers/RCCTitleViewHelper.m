@@ -96,18 +96,29 @@ navigationController:(UINavigationController*)navigationController
 
 -(BOOL)isTitleImage
 {
-    return self.titleImageData && ![self.titleImageData isEqual:[NSNull null]];
+    return self.titleImageData; //&& ![self.titleImageData isEqual:[NSNull null]];
 }
 
 
 -(void)setupTitleImage
 {
-    UIImage *titleImage = [RCTConvert UIImage:self.titleImageData];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:titleImage];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
-    imageView.autoresizingMask = self.titleView.autoresizingMask;
-    
-    self.viewController.navigationItem.titleView = imageView;
+    if ([self.title isEqualToString:@"IMAGE"])
+    {
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Logo" ofType:@"png"];
+        UIImage *titleImage = [UIImage imageWithContentsOfFile:filePath];
+        UIImageView *imageView=[[UIImageView alloc]initWithFrame:CGRectMake(0, 0, 116, 34)];
+        imageView.image= titleImage;
+        imageView.contentMode = UIViewContentModeScaleAspectFit;
+        imageView.autoresizingMask = self.titleView.autoresizingMask;
+        self.viewController.navigationItem.titleView = imageView;
+    }
+    else{
+        //UIImage *titleImage = [RCTConvert UIImage:self.titleImageData];
+        //UIImageView *imageView = [[UIImageView alloc] initWithImage:titleImage];
+        //imageView.contentMode = UIViewContentModeScaleAspectFit;
+        //imageView.autoresizingMask = self.titleView.autoresizingMask;
+        //self.viewController.navigationItem.titleView = imageView;
+    }
 }
 
 
